@@ -5,7 +5,7 @@ import 'appExeption.dart';
 mixin ResponseValidator {
   void validateResponse(Response response) {
     if (response.statusCode != 200) {
-      throw AppExeption("خطای نامشخص");
+      throw AppException();
     }
   }
 }
