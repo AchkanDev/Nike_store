@@ -2,6 +2,7 @@ import 'package:cached_network_image/cached_network_image.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:nike_store/common/utility.dart';
 import 'package:nike_store/data/repo/banner_repository.dart';
 import 'package:nike_store/data/repo/product_repository.dart';
 import 'package:nike_store/main.dart';
@@ -9,7 +10,8 @@ import 'package:nike_store/widgets/loadingImage.dart';
 import 'package:nike_store/widgets/slider.dart';
 import 'package:theme_provider/theme_provider.dart';
 
-import '../../widgets/horizontalProductList.dart';
+import '../../widgets/error_widget.dart';
+import '../product/horizontalProductList.dart';
 import 'bloc/home_bloc.dart';
 
 class HomeScreen extends StatefulWidget {
@@ -41,9 +43,9 @@ class _HomeScreenState extends State<HomeScreen> {
             builder: (context, state) {
               if (state is HomeSuccess) {
                 return ListView.builder(
+                  physics: defaultPhysics,
                   itemCount: 5,
                   itemBuilder: (context, index) {
-                    String a = state.latestProduct[8].image;
                     switch (index) {
                       case 0:
                         return Container(
@@ -87,20 +89,11 @@ class _HomeScreenState extends State<HomeScreen> {
                   child: CircularProgressIndicator(),
                 );
               } else if (state is HomeError) {
-                return Center(
-                  child: Column(
-                    mainAxisAlignment: MainAxisAlignment.center,
-                    crossAxisAlignment: CrossAxisAlignment.center,
-                    children: [
-                      Text("خطای نامشخص"),
-                      ElevatedButton(
-                          onPressed: () {
-                            BlocProvider.of<HomeBloc>(context)
-                                .add(HomeRefresh());
-                          },
-                          child: Text("تلاش دوباره"))
-                    ],
-                  ),
+                return AppErrorWidget(
+                  exception: state.messageError,
+                  onTap: () {
+                    BlocProvider.of<HomeBloc>(context).add(HomeStarted());
+                  },
                 );
               } else {
                 throw Exception("invalid state");

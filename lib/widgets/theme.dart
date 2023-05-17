@@ -10,13 +10,14 @@ class MyAppThemeConfig {
   final errorColor;
   final onError;
   final secondaryColor;
-  // static const primaryTextColor = Color(0xff262A35);
+  final primaryTextColor;
   final secondaryTextColor;
   final onPrimary;
   final onSecondary;
   final onSurface;
   final onBackground;
   final brightness;
+  final deviderColor;
 
   MyAppThemeConfig.light()
       : primaryColor = Color(0xff6200EE),
@@ -26,12 +27,14 @@ class MyAppThemeConfig {
         errorColor = Color(0xffB00020),
         onError = Colors.white,
         secondaryColor = Color(0xff03DAC6),
+        primaryTextColor = Color(0xff262A35),
         secondaryTextColor = Color(0xffB3B6BE),
         onPrimary = Colors.white,
         onSecondary = Colors.black,
         onBackground = Colors.black,
         onSurface = Colors.black,
-        brightness = Brightness.light;
+        brightness = Brightness.light,
+        deviderColor = Colors.grey.shade300;
 
   MyAppThemeConfig.dark()
       : primaryColor = Color(0xffBB86FC),
@@ -41,15 +44,20 @@ class MyAppThemeConfig {
         errorColor = Color(0xffCF6679),
         onError = Colors.black,
         secondaryColor = Color(0xff03DAC5),
+        primaryTextColor = Colors.white,
         secondaryTextColor = Color(0xffB3B6BE),
         onPrimary = Colors.black,
         onSecondary = Colors.black,
         onBackground = Colors.white,
         onSurface = Colors.white,
-        brightness = Brightness.dark;
+        brightness = Brightness.dark,
+        deviderColor = Colors.grey.shade700;
 
   ThemeData getTheme() {
     return ThemeData(
+      dividerTheme: DividerThemeData(
+        color: deviderColor,
+      ),
       colorScheme: ColorScheme(
           brightness: brightness,
           primary: primaryColor,
@@ -67,11 +75,13 @@ class MyAppThemeConfig {
           subtitle2: defualtStyleText.apply(color: secondaryTextColor),
           bodyText2: defualtStyleText,
           caption: defualtStyleText.apply(color: secondaryTextColor),
-          headline6: defualtStyleText.copyWith(fontWeight: FontWeight.bold),
+          headline6: defualtStyleText.copyWith(
+              fontWeight: FontWeight.bold, fontSize: 18),
           button: defualtStyleText),
       backgroundColor: backgroundColor,
       brightness: brightness,
       primaryColor: primaryColor,
+
       elevatedButtonTheme: ElevatedButtonThemeData(
         style: ButtonStyle(
             backgroundColor: MaterialStateProperty.all(primaryColor)),
