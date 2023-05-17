@@ -1,5 +1,7 @@
 import 'package:flutter/material.dart';
 
+final defualtStyleText = const TextStyle(fontFamily: "iranYekan");
+
 class MyAppThemeConfig {
   final primaryColor;
   final primaryVariant;
@@ -61,6 +63,12 @@ class MyAppThemeConfig {
           surface: surfaceColor,
           onSurface: onSurface),
       fontFamily: "iranYekan",
+      textTheme: TextTheme(
+          subtitle2: defualtStyleText.apply(color: secondaryTextColor),
+          bodyText2: defualtStyleText,
+          caption: defualtStyleText.apply(color: secondaryTextColor),
+          headline6: defualtStyleText.copyWith(fontWeight: FontWeight.bold),
+          button: defualtStyleText),
       backgroundColor: backgroundColor,
       brightness: brightness,
       primaryColor: primaryColor,
