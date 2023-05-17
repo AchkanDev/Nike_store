@@ -1,20 +1,29 @@
+import 'package:cached_network_image/cached_network_image.dart';
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_store/data/repo/banner_repository.dart';
 import 'package:nike_store/data/repo/product_repository.dart';
 import 'package:nike_store/main.dart';
+import 'package:nike_store/widgets/loadingImage.dart';
+import 'package:nike_store/widgets/slider.dart';
+import 'package:theme_provider/theme_provider.dart';
 
+import '../../widgets/horizontalProductList.dart';
 import 'bloc/home_bloc.dart';
 
-class HomeScreen extends StatelessWidget {
-  final GestureTapCallback themeSwitchToModeDark;
-  final GestureTapCallback themeSwitchToModeLight;
+class HomeScreen extends StatefulWidget {
+  final GestureTapCallback themeSwitchMode;
+  const HomeScreen({
+    super.key,
+    required this.themeSwitchMode,
+  });
 
-  const HomeScreen(
-      {super.key,
-      required this.themeSwitchToModeDark,
-      required this.themeSwitchToModeLight});
+  @override
+  State<HomeScreen> createState() => _HomeScreenState();
+}
 
+class _HomeScreenState extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     return BlocProvider(
@@ -33,33 +42,43 @@ class HomeScreen extends StatelessWidget {
               if (state is HomeSuccess) {
                 return ListView.builder(
                   itemCount: 5,
-                  padding: EdgeInsets.fromLTRB(12, 12, 12, 100),
                   itemBuilder: (context, index) {
                     String a = state.latestProduct[8].image;
                     switch (index) {
                       case 0:
-                        return brightness == Brightness.dark
-                            ? InkWell(
-                                onTap: themeSwitchToModeDark,
-                                child: Image.asset(
-                                  "assets/img/nike_dark.png",
-                                  height: 32,
-                                ),
-                              )
-                            : InkWell(
-                                onTap: themeSwitchToModeLight,
-                                child: Image.asset(
-                                  "assets/img/nike_logo.png",
-                                  height: 32,
-                                ),
-                              );
-                      default:
                         return Container(
-                          child: Image.network(
-                            a,
-                            height: 500,
+                          height: 56,
+                          alignment: Alignment.center,
+                          child: InkWell(
+                            onTap: widget.themeSwitchMode,
+                            child: Image.asset(
+                              themeMode == ThemeMode.dark
+                                  ? "assets/img/nike_dark.png"
+                                  : "assets/img/nike_logo.png",
+                              height: 28,
+                              fit: BoxFit.fitHeight,
+                            ),
                           ),
                         );
+
+                      case 2:
+                        return BannerSlider(
+                          banners: state.banners,
+                        );
+
+                      case 3:
+                        return HorizontalProductList(
+                          onTap: () {},
+                          products: state.latestProduct,
+                          title: "جدیدترین",
+                        );
+                      case 4:
+                        return HorizontalProductList(
+                            title: "پربازدیدترین",
+                            onTap: () {},
+                            products: state.pupolarProduct);
+                      default:
+                        return Container();
                     }
                   },
                 );
