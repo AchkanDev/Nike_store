@@ -4,7 +4,7 @@ import 'package:nike_store/data/repo/comment_repository.dart';
 import 'package:nike_store/screen/product/comment/bloc/comment_bloc.dart';
 import 'package:nike_store/widgets/error_widget.dart';
 
-import 'commentItem.dart';
+import 'comment_item.dart';
 
 class CommentList extends StatelessWidget {
   final int productId;

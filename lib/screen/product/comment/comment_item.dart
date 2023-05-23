@@ -16,7 +16,7 @@ class CommentItem extends StatelessWidget {
       margin: EdgeInsets.fromLTRB(8, 0, 8, 8),
       decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(12),
-          border: Border.all(color: Theme.of(context).dividerTheme.color!)),
+          border: Border.all(color: Theme.of(context).dividerColor)),
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [

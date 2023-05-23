@@ -28,7 +28,9 @@ class HorizontalProductList extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: Theme.of(context).textTheme.subtitle2,
+                style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                      color: Theme.of(context).colorScheme.onBackground,
+                    ),
               ),
               TextButton(onPressed: () {}, child: Text("مشاهده همه ")),
             ],
