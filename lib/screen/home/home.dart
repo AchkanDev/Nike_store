@@ -13,14 +13,9 @@ import 'package:theme_provider/theme_provider.dart';
 import '../../widgets/error_widget.dart';
 import '../product/horizontalProductList.dart';
 import 'bloc/home_bloc.dart';
+import 'nike_logo.dart';
 
 class HomeScreen extends StatefulWidget {
-  final GestureTapCallback themeSwitchMode;
-  const HomeScreen({
-    super.key,
-    required this.themeSwitchMode,
-  });
-
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }
@@ -48,20 +43,7 @@ class _HomeScreenState extends State<HomeScreen> {
                   itemBuilder: (context, index) {
                     switch (index) {
                       case 0:
-                        return Container(
-                          height: 56,
-                          alignment: Alignment.center,
-                          child: InkWell(
-                            onTap: widget.themeSwitchMode,
-                            child: Image.asset(
-                              themeMode == ThemeMode.dark
-                                  ? "assets/img/nike_dark.png"
-                                  : "assets/img/nike_logo.png",
-                              height: 28,
-                              fit: BoxFit.fitHeight,
-                            ),
-                          ),
-                        );
+                        return NikeLogo();
 
                       case 2:
                         return BannerSlider(
