@@ -1,4 +1,7 @@
 import 'package:flutter/material.dart';
+import 'package:shared_preferences/shared_preferences.dart';
+
+import '../main.dart';
 
 final defualtStyleText = const TextStyle(fontFamily: "iranYekan");
 
@@ -92,7 +95,7 @@ class MyAppThemeConfig {
             borderRadius: BorderRadius.circular(8),
             borderSide: BorderSide.none,
           )),
-      dividerColor: surfaceColor,
+      dividerColor: deviderColor,
       scaffoldBackgroundColor: backgroundColor,
       // textTheme: languageCode == "en" ? enPrimaryTextTheme : faPrimaryTextTheme,
       // dividerColor: Colors.white,
