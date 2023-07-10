@@ -1,11 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/screen/home/home.dart';
-import 'package:nike_store/widgets/theme.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-
-import '../main.dart';
 import 'auth/auth.dart';
+import 'cart/cart.dart';
 
 const int homeIndex = 0;
 const int cartIndex = 1;
@@ -65,14 +63,25 @@ class _RootScreenState extends State<RootScreen> {
               _navigator(
                   _cartKey,
                   cartIndex,
-                  const Center(
-                    child: Text('Cart'),
+                  Center(
+                    child: CartScreen(),
                   )),
               _navigator(
                   _profileKey,
                   profileIndex,
                   Center(
-                    child: AuthScreen(),
+                    child: ElevatedButton(
+                        child: const Text("خروج از حساب کاربری"),
+                        onPressed: () async {
+                          await authRepository.signOut();
+                          if (AuthRepository.authChangeNotifier.value == null ||
+                              AuthRepository.authChangeNotifier.value!
+                                  .accessToken.isEmpty) {
+                            ScaffoldMessenger.of(context).showSnackBar(
+                                const SnackBar(
+                                    content: Text("خروج با موفیقت انجام شد")));
+                          }
+                        }),
                   )),
             ],
           ),
