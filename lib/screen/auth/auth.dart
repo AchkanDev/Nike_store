@@ -1,7 +1,7 @@
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
+import 'package:nike_store/screen/auth/bloc/auth_bloc.dart';
 
 class AuthScreen extends StatefulWidget {
   @override
@@ -10,10 +10,9 @@ class AuthScreen extends StatefulWidget {
 
 class _AuthScreenState extends State<AuthScreen> {
   TextEditingController _usernameController =
-      TextEditingController(text: "test@gmail.com");
+      TextEditingController(text: "ashkan.abavi78@gmail.com");
   TextEditingController _passwordController =
-      TextEditingController(text: "123456");
-  bool isLogin = true;
+      TextEditingController(text: "12345678");
 
   @override
   Widget build(BuildContext context) {
@@ -35,84 +34,115 @@ class _AuthScreenState extends State<AuthScreen> {
                     BorderSide(color: theme.colorScheme.onBackground, width: 1),
                 borderRadius: BorderRadius.circular(12),
               ))),
-      child: Scaffold(
-        body: Center(
-          child: Padding(
-            padding: const EdgeInsets.all(35.0),
-            child: Column(
-                crossAxisAlignment: CrossAxisAlignment.center,
-                mainAxisAlignment: MainAxisAlignment.center,
-                children: [
-                  Image.asset(
-                    "assets/img/nike_logo.png",
-                    height: 50,
-                    color: theme.colorScheme.onBackground,
-                  ),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  Text(isLogin ? "خوش آمدید" : "ثبت نام"),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  Text(isLogin
-                      ? "لطفا حساب کاربری خود را وارد کنید"
-                      : "ایمیل و رمز عبور خود را تعیین کنید"),
-                  const SizedBox(
-                    height: 24,
-                  ),
-                  TextField(
-                    controller: _usernameController,
-                    keyboardType: TextInputType.emailAddress,
-                    decoration: const InputDecoration(
-                      label: Text("آدرس ایمیل"),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  PasswordTextField(
-                    controller: _passwordController,
-                    onBackground: theme.colorScheme.onBackground,
-                  ),
-                  const SizedBox(
-                    height: 8,
-                  ),
-                  ElevatedButton(
-                      onPressed: () {
-                        // authRepository.refreshToken();
-                        authRepository.login(
-                            _usernameController.text, _passwordController.text);
-                      },
-                      child: Text(isLogin ? "ورود" : "ثبت نام")),
-                  const SizedBox(
-                    height: 12,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      setState(() {
-                        isLogin = !isLogin;
-                      });
-                    },
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(isLogin
-                            ? "حساب کاربری ندارید؟"
-                            : "حساب کاربری دارید؟"),
-                        const SizedBox(
-                          width: 8,
-                        ),
-                        Text(
-                          isLogin ? "ثبت نام " : "ورود",
-                          style: TextStyle(
-                              color: theme.colorScheme.primary,
-                              decoration: TextDecoration.underline),
-                        ),
-                      ],
-                    ),
-                  )
-                ]),
+      child: Directionality(
+        textDirection: TextDirection.rtl,
+        child: Scaffold(
+          body: Center(
+            child: Padding(
+              padding: const EdgeInsets.all(35.0),
+              child: BlocProvider<AuthBloc>(
+                create: (context) {
+                  final bloc = AuthBloc(authRepository);
+                  bloc.stream.forEach((state) {
+                    if (state is AuthSuccess) {
+                      Navigator.of(context).pop();
+                    } else if (state is AuthError) {
+                      ScaffoldMessenger.of(context).showSnackBar(
+                        SnackBar(content: Text(state.exception.messageError)),
+                      );
+                    }
+                  });
+                  bloc.add(AuthStarted());
+                  return bloc;
+                },
+                child: BlocBuilder<AuthBloc, AuthState>(
+                  buildWhen: (previous, current) {
+                    return current is AuthInitial ||
+                        current is AuthLoading ||
+                        current is AuthError;
+                  },
+                  builder: (context, state) {
+                    return Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Image.asset(
+                            "assets/img/nike_logo.png",
+                            height: 50,
+                            color: theme.colorScheme.onBackground,
+                          ),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          Text(state.isLoginMode ? "خوش آمدید" : "ثبت نام"),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          Text(state.isLoginMode
+                              ? "لطفا حساب کاربری خود را وارد کنید"
+                              : "ایمیل و رمز عبور خود را تعیین کنید"),
+                          const SizedBox(
+                            height: 24,
+                          ),
+                          TextField(
+                            controller: _usernameController,
+                            keyboardType: TextInputType.emailAddress,
+                            decoration: const InputDecoration(
+                              label: Text("آدرس ایمیل"),
+                            ),
+                          ),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          PasswordTextField(
+                            controller: _passwordController,
+                            onBackground: theme.colorScheme.onBackground,
+                          ),
+                          const SizedBox(
+                            height: 8,
+                          ),
+                          ElevatedButton(
+                              onPressed: () {
+                                // authRepository.refreshToken();
+                                BlocProvider.of<AuthBloc>(context).add(
+                                    ButtonSaveAuthInfo(_usernameController.text,
+                                        _passwordController.text));
+                              },
+                              child:
+                                  Text(state.isLoginMode ? "ورود" : "ثبت نام")),
+                          const SizedBox(
+                            height: 12,
+                          ),
+                          GestureDetector(
+                            onTap: () {
+                              setState(() {
+                                BlocProvider.of<AuthBloc>(context)
+                                    .add(ButtonChangeMode());
+                              });
+                            },
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(state.isLoginMode
+                                    ? "حساب کاربری ندارید؟"
+                                    : "حساب کاربری دارید؟"),
+                                const SizedBox(
+                                  width: 8,
+                                ),
+                                Text(
+                                  state.isLoginMode ? "ثبت نام " : "ورود",
+                                  style: TextStyle(
+                                      color: theme.colorScheme.primary,
+                                      decoration: TextDecoration.underline),
+                                ),
+                              ],
+                            ),
+                          )
+                        ]);
+                  },
+                ),
+              ),
+            ),
           ),
         ),
       ),
