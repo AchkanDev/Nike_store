@@ -1,18 +1,11 @@
 import 'package:flutter/material.dart';
-import 'package:get/get.dart';
-import 'package:nike_store/data/product.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
-import 'package:nike_store/data/repo/banner_repository.dart';
-import 'package:nike_store/data/repo/product_repository.dart';
-import 'package:nike_store/screen/auth/auth.dart';
-import 'package:nike_store/screen/home/home.dart';
 import 'package:nike_store/screen/root.dart';
 import 'package:nike_store/widgets/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
-import 'package:theme_provider/theme_provider.dart';
 
-ThemeMode themeMode = ThemeMode.light;
-
+late ThemeMode themeMode;
+ValueNotifier<ThemeMode> theme = ValueNotifier(themeMode);
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   authRepository.loadTokens();
@@ -32,8 +25,10 @@ class _MyAppState extends State<MyApp> {
     setState(() {
       if (sharedPreferences.getString("theme") == "dark") {
         themeMode = ThemeMode.dark;
+        theme.value = ThemeMode.dark;
       } else {
         themeMode = ThemeMode.light;
+        theme.value = ThemeMode.light;
       }
     });
   }
@@ -49,7 +44,7 @@ class _MyAppState extends State<MyApp> {
     return MaterialApp(
       debugShowCheckedModeBanner: false,
       title: 'Nike Store',
-      theme: themeMode == ThemeMode.dark
+      theme: theme.value == ThemeMode.dark
           ? MyAppThemeConfig.dark().getTheme()
           : MyAppThemeConfig.light().getTheme(),
       home: Directionality(
@@ -63,12 +58,12 @@ class _MyAppState extends State<MyApp> {
   void methodSwitch() async {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
-      if (themeMode == ThemeMode.dark) {
+      if (theme.value == ThemeMode.dark) {
         sharedPreferences.setString("theme", "light");
-        themeMode = ThemeMode.light;
+        theme.value = ThemeMode.light;
       } else {
         sharedPreferences.setString("theme", "dark");
-        themeMode = ThemeMode.dark;
+        theme.value = ThemeMode.dark;
       }
     });
   }
