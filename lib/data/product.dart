@@ -22,5 +22,5 @@ class ProductEntity {
         price = json["price"],
         discount = json["discount"],
         image = json["image"],
-        previousPrice = json["previous_price"];
+        previousPrice = json["previous_price"] ?? json['price'];
 }
