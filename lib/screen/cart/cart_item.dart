@@ -121,7 +121,12 @@ class itemCardForBug extends StatelessWidget {
               )
             ],
           ),
-          TextButton(onPressed: () {}, child: Text("حذف از سبد خرید"))
+          SizedBox(
+              width: MediaQuery.of(context).size.width,
+              child: ElevatedButton(
+                onPressed: () {},
+                child: const Text("حذف از سبد خرید"),
+              ))
         ],
       ),
     );

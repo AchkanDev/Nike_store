@@ -33,7 +33,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     try {
       emit(CartLoading());
       final CartResponse cartResponse = await cartRepository.getAll();
-      emit(CartSuccess(cartResponse));
+      if (cartResponse.cartItems.isEmpty) {
+        emit(CartEmptyState());
+      } else {
+        emit(CartSuccess(cartResponse));
+      }
     } catch (e) {
       emit(CartError(AppException(messageError: e.toString())));
     }

@@ -1,10 +1,13 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:flutter_svg/flutter_svg.dart';
 import 'package:nike_store/data/auth_info.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/cart_repository.dart';
 import 'package:nike_store/screen/auth/auth.dart';
 import 'package:nike_store/screen/cart/bloc/cart_bloc.dart';
+import 'package:nike_store/screen/home/home.dart';
+import 'package:nike_store/widgets/empty_state.dart';
 import 'package:nike_store/widgets/loadingImage.dart';
 
 import 'cart_item.dart';
@@ -62,16 +65,35 @@ class _CartScreenState extends State<CartScreen> {
                 // ScaffoldMessenger.of(context).showSnackBar(
                 //     SnackBar(content: Text(state.appException.messageError)));
               } else if (state is CartAuthRequired) {
-                return Center(
-                    child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).push(
-                        MaterialPageRoute(builder: (context) => AuthScreen()));
-                  },
-                  child: Text("ورود"),
-                ));
+                return EmptuState(
+                  message: " وارد حساب کاربری خود شوید",
+                  image: SvgPicture.asset("assets/img/auth_required.svg",
+                      width: 140),
+                  callToBack: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => AuthScreen()));
+                    },
+                    child: const Text("ورود به حساب کاربری"),
+                  ),
+                );
                 // ScaffoldMessenger.of(context).showSnackBar(
                 //     SnackBar(content: Text(state.appException.messageError)));
+              } else if (state is CartEmptyState) {
+                return EmptuState(
+                    message: "هیچ محصولی یافت نشد",
+                    image: SvgPicture.asset(
+                      "assets/img/empty_cart.svg",
+                      width: 220,
+                    ),
+                    callToBack: ElevatedButton(
+                      child: Text("ورود به فروشگاه"),
+                      onPressed: () => Navigator.of(context).push(
+                        MaterialPageRoute(
+                          builder: (context) => HomeScreen(),
+                        ),
+                      ),
+                    ));
               } else {
                 throw Exception("State not valid");
               }
