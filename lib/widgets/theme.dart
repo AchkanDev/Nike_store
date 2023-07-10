@@ -21,6 +21,7 @@ class MyAppThemeConfig {
   final onBackground;
   final brightness;
   final deviderColor;
+  final shadow;
 
   MyAppThemeConfig.light()
       : primaryColor = Color(0xff6200EE),
@@ -37,7 +38,8 @@ class MyAppThemeConfig {
         onBackground = Colors.black,
         onSurface = Colors.black,
         brightness = Brightness.light,
-        deviderColor = Colors.grey.shade300;
+        deviderColor = Colors.grey.shade300,
+        shadow = Colors.black.withOpacity(0.1);
 
   MyAppThemeConfig.dark()
       : primaryColor = Color(0xffBB86FC),
@@ -54,14 +56,19 @@ class MyAppThemeConfig {
         onBackground = Colors.white,
         onSurface = Colors.white,
         brightness = Brightness.dark,
-        deviderColor = Colors.grey.shade700;
+        deviderColor = Colors.grey.shade700,
+        shadow = Colors.white.withOpacity(0.1);
 
   ThemeData getTheme() {
     return ThemeData(
+      snackBarTheme: SnackBarThemeData(
+        contentTextStyle: defualtStyleText.apply(color: onPrimary),
+      ),
       dividerTheme: DividerThemeData(
         color: deviderColor,
       ),
       colorScheme: ColorScheme(
+          shadow: shadow,
           brightness: brightness,
           primary: primaryColor,
           onPrimary: onPrimary,
@@ -76,10 +83,11 @@ class MyAppThemeConfig {
       fontFamily: "iranYekan",
       textTheme: TextTheme(
           subtitle2: defualtStyleText.apply(color: secondaryTextColor),
-          bodyText2: defualtStyleText,
+          bodyText2: defualtStyleText.apply(color: primaryTextColor),
           caption: defualtStyleText.apply(color: secondaryTextColor),
-          headline6: defualtStyleText.copyWith(
-              fontWeight: FontWeight.bold, fontSize: 18),
+          headline6: defualtStyleText
+              .copyWith(fontWeight: FontWeight.bold, fontSize: 18)
+              .apply(color: primaryTextColor),
           button: defualtStyleText),
       backgroundColor: backgroundColor,
       brightness: brightness,
