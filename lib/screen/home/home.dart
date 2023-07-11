@@ -16,6 +16,8 @@ import 'bloc/home_bloc.dart';
 import 'nike_logo.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   State<HomeScreen> createState() => _HomeScreenState();
 }

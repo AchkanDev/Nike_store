@@ -6,6 +6,7 @@ class CartItemEntity {
   final ProductEntity productEntity;
   final int cart_item_id;
   final int count;
+  bool loadingOnDeleting = false;
 
   CartItemEntity(this.productEntity, this.cart_item_id, this.count);
 

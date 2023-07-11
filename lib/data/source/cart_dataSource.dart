@@ -1,7 +1,5 @@
 import 'package:dio/dio.dart';
-import 'package:nike_store/common/response_validator.dart';
 
-import '../cart_item.dart';
 import '../add_to_cart.dart';
 import '../cart_response.dart';
 
@@ -10,7 +8,7 @@ abstract class ICartDataSource {
   Future<CartResponse> getAll();
   Future<AddToCartResponseEntity> changeCount();
   Future<int> count();
-  Future<void> delete();
+  Future<void> delete(int cartId);
 }
 
 class CardRemoteDataSource implements ICartDataSource {
@@ -38,9 +36,10 @@ class CardRemoteDataSource implements ICartDataSource {
   }
 
   @override
-  Future<void> delete() {
-    // TODO: implement delete
-    throw UnimplementedError();
+  Future<void> delete(int cartId) async {
+    await httpClient.post("cart/remove", data: {
+      "cart_item_id": cartId,
+    });
   }
 
   @override

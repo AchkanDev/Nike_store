@@ -1,18 +1,18 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
-import 'package:nike_store/data/auth_info.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/cart_repository.dart';
 import 'package:nike_store/screen/auth/auth.dart';
 import 'package:nike_store/screen/cart/bloc/cart_bloc.dart';
 import 'package:nike_store/screen/home/home.dart';
 import 'package:nike_store/widgets/empty_state.dart';
-import 'package:nike_store/widgets/loadingImage.dart';
 
-import 'cart_item.dart';
+import 'cart_show_items.dart';
 
 class CartScreen extends StatefulWidget {
+  const CartScreen({super.key});
+
   @override
   State<CartScreen> createState() => _CartScreenState();
 }
@@ -59,6 +59,7 @@ class _CartScreenState extends State<CartScreen> {
               } else if (state is CartSuccess) {
                 return CartItem(
                   state: state,
+                  cartBloc: cartBloc,
                 );
               } else if (state is CartError) {
                 return Center(child: Text(state.appException.messageError));
@@ -72,7 +73,7 @@ class _CartScreenState extends State<CartScreen> {
                   callToBack: ElevatedButton(
                     onPressed: () {
                       Navigator.of(context).push(MaterialPageRoute(
-                          builder: (context) => AuthScreen()));
+                          builder: (context) => const AuthScreen()));
                     },
                     child: const Text("ورود به حساب کاربری"),
                   ),
@@ -87,10 +88,10 @@ class _CartScreenState extends State<CartScreen> {
                       width: 220,
                     ),
                     callToBack: ElevatedButton(
-                      child: Text("ورود به فروشگاه"),
+                      child: const Text("ورود به فروشگاه"),
                       onPressed: () => Navigator.of(context).push(
                         MaterialPageRoute(
-                          builder: (context) => HomeScreen(),
+                          builder: (context) => const HomeScreen(),
                         ),
                       ),
                     ));

@@ -4,14 +4,16 @@ import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/screen/auth/bloc/auth_bloc.dart';
 
 class AuthScreen extends StatefulWidget {
+  const AuthScreen({super.key});
+
   @override
   State<AuthScreen> createState() => _AuthScreenState();
 }
 
 class _AuthScreenState extends State<AuthScreen> {
-  TextEditingController _usernameController =
+  final TextEditingController _usernameController =
       TextEditingController(text: "ashkan.abavi78@gmail.com");
-  TextEditingController _passwordController =
+  final TextEditingController _passwordController =
       TextEditingController(text: "12345678");
 
   @override

@@ -4,8 +4,7 @@ import 'package:nike_store/screen/root.dart';
 import 'package:nike_store/widgets/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-late ThemeMode themeMode;
-ValueNotifier<ThemeMode> theme = ValueNotifier(themeMode);
+ValueNotifier<ThemeMode> theme = ValueNotifier(ThemeMode.light);
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   authRepository.loadTokens();
@@ -24,10 +23,8 @@ class _MyAppState extends State<MyApp> {
     SharedPreferences sharedPreferences = await SharedPreferences.getInstance();
     setState(() {
       if (sharedPreferences.getString("theme") == "dark") {
-        themeMode = ThemeMode.dark;
         theme.value = ThemeMode.dark;
       } else {
-        themeMode = ThemeMode.light;
         theme.value = ThemeMode.light;
       }
     });

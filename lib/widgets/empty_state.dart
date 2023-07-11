@@ -24,7 +24,7 @@ class EmptuState extends StatelessWidget {
                 message,
                 style: Theme.of(context)
                     .textTheme
-                    .headline6!
+                    .titleLarge!
                     .copyWith(height: 1.2),
                 textAlign: TextAlign.center,
               ),

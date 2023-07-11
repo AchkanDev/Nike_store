@@ -2,16 +2,17 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nike_store/common/utility.dart';
 import 'package:nike_store/data/cart_item.dart';
-import 'package:nike_store/main.dart';
 
 import '../../widgets/loadingImage.dart';
 import 'bloc/cart_bloc.dart';
 
 class CartItem extends StatelessWidget {
   final CartSuccess state;
+  final CartBloc? cartBloc;
   const CartItem({
     super.key,
     required this.state,
+    this.cartBloc,
   });
 
   @override
@@ -21,16 +22,24 @@ class CartItem extends StatelessWidget {
       itemCount: state.cartResponse.cartItems.length,
       itemBuilder: (context, index) {
         final data = state.cartResponse.cartItems[index];
-        return itemCardForBug(data: data);
+        return itemCardForBug(
+          data: data,
+          onDeleteButton: () {
+            cartBloc!.add(CartOnClickedDeleteButton(data.cart_item_id));
+          },
+        );
       },
     );
   }
 }
 
 class itemCardForBug extends StatelessWidget {
+  final GestureTapCallback onDeleteButton;
+
   const itemCardForBug({
     super.key,
     required this.data,
+    required this.onDeleteButton,
   });
 
   final CartItemEntity data;
@@ -93,7 +102,7 @@ class itemCardForBug extends StatelessWidget {
                           icon: const Icon(CupertinoIcons.plus_rectangle)),
                       Text(
                         data.count.toString(),
-                        style: Theme.of(context).textTheme.headline6,
+                        style: Theme.of(context).textTheme.titleLarge,
                       ),
                       IconButton(
                           onPressed: () {},
@@ -124,8 +133,12 @@ class itemCardForBug extends StatelessWidget {
           SizedBox(
               width: MediaQuery.of(context).size.width,
               child: ElevatedButton(
-                onPressed: () {},
-                child: const Text("حذف از سبد خرید"),
+                onPressed: onDeleteButton,
+                child: data.loadingOnDeleting
+                    ? const Center(
+                        child: CupertinoActivityIndicator(),
+                      )
+                    : const Text("حذف از سبد خرید"),
               ))
         ],
       ),
