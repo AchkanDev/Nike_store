@@ -1,6 +1,5 @@
 import 'package:flutter/material.dart';
 
-
 const defualtStyleText = TextStyle(fontFamily: "iranYekan");
 
 class MyAppThemeConfig {
@@ -55,7 +54,7 @@ class MyAppThemeConfig {
         onSurface = Colors.white,
         brightness = Brightness.dark,
         deviderColor = Colors.grey.shade700,
-        shadow = Colors.white.withOpacity(0.1);
+        shadow = Colors.white.withOpacity(0.3);
 
   ThemeData getTheme() {
     return ThemeData(
@@ -92,21 +91,24 @@ class MyAppThemeConfig {
       // textTheme: languageCode == "en" ? enPrimaryTextTheme : faPrimaryTextTheme,
       // dividerColor: Colors.white,
       appBarTheme: AppBarTheme(
-        backgroundColor: primaryColor,
-        foregroundColor: onPrimary,
-      ), colorScheme: ColorScheme(
-          shadow: shadow,
-          brightness: brightness,
-          primary: primaryColor,
-          onPrimary: onPrimary,
-          secondary: secondaryColor,
-          onSecondary: onSecondary,
-          error: errorColor,
-          onError: onError,
-          background: backgroundColor,
-          onBackground: onBackground,
-          surface: surfaceColor,
-          onSurface: onSurface).copyWith(background: backgroundColor),
+        elevation: 0,
+        backgroundColor: backgroundColor,
+        foregroundColor: onBackground,
+      ),
+      colorScheme: ColorScheme(
+              shadow: shadow,
+              brightness: brightness,
+              primary: primaryColor,
+              onPrimary: onPrimary,
+              secondary: secondaryColor,
+              onSecondary: onSecondary,
+              error: errorColor,
+              onError: onError,
+              background: backgroundColor,
+              onBackground: onBackground,
+              surface: surfaceColor,
+              onSurface: onSurface)
+          .copyWith(background: backgroundColor),
     );
   }
 }

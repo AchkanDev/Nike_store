@@ -19,13 +19,13 @@ class CartBloc extends Bloc<CartEvent, CartState> {
         if (authinfo == null || authinfo.accessToken.isEmpty) {
           emit(CartAuthRequired());
         } else {
-          await cartState(emit);
+          await cartState(emit, event.isRefreshed);
         }
       } else if (event is CartAuthInfoChanged) {
         if (event.authInfo == null || event.authInfo!.accessToken.isEmpty) {
           emit(CartAuthRequired());
         } else {
-          await cartState(emit);
+          await cartState(emit, false);
         }
       } else if (event is CartOnClickedDeleteButton) {
         if (state is CartSuccess) {
@@ -59,9 +59,11 @@ class CartBloc extends Bloc<CartEvent, CartState> {
       }
     });
   }
-  Future<void> cartState(Emitter<CartState> emit) async {
+  Future<void> cartState(Emitter<CartState> emit, bool isRefreshed) async {
     try {
-      emit(CartLoading());
+      if (!isRefreshed) {
+        emit(CartLoading());
+      }
       final CartResponse cartResponse = await cartRepository.getAll();
       if (cartResponse.cartItems.isEmpty) {
         emit(CartEmptyState());

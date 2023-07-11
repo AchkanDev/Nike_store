@@ -2,41 +2,15 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nike_store/common/utility.dart';
 import 'package:nike_store/data/cart_item.dart';
+import 'package:pull_to_refresh/pull_to_refresh.dart';
 
 import '../../widgets/loadingImage.dart';
 import 'bloc/cart_bloc.dart';
 
-class CartItem extends StatelessWidget {
-  final CartSuccess state;
-  final CartBloc? cartBloc;
-  const CartItem({
-    super.key,
-    required this.state,
-    this.cartBloc,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return ListView.builder(
-      physics: defaultPhysics,
-      itemCount: state.cartResponse.cartItems.length,
-      itemBuilder: (context, index) {
-        final data = state.cartResponse.cartItems[index];
-        return itemCardForBug(
-          data: data,
-          onDeleteButton: () {
-            cartBloc!.add(CartOnClickedDeleteButton(data.cart_item_id));
-          },
-        );
-      },
-    );
-  }
-}
-
-class itemCardForBug extends StatelessWidget {
+class CartShowItems extends StatelessWidget {
   final GestureTapCallback onDeleteButton;
 
-  const itemCardForBug({
+  CartShowItems({
     super.key,
     required this.data,
     required this.onDeleteButton,
@@ -130,9 +104,16 @@ class itemCardForBug extends StatelessWidget {
               )
             ],
           ),
+          Divider(
+            height: 5,
+          ),
           SizedBox(
               width: MediaQuery.of(context).size.width,
-              child: ElevatedButton(
+              height: 40,
+              child: TextButton(
+                style: TextButton.styleFrom(
+                    primary: Theme.of(context).colorScheme.onBackground,
+                    textStyle: Theme.of(context).textTheme.bodyMedium),
                 onPressed: onDeleteButton,
                 child: data.loadingOnDeleting
                     ? const Center(

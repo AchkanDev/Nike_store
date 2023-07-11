@@ -6,8 +6,9 @@ abstract class CartEvent {
 
 class CartStarted extends CartEvent {
   final AuthInfo? authInfo;
+  final bool isRefreshed;
 
-  const CartStarted(this.authInfo);
+  const CartStarted(this.authInfo, {this.isRefreshed = false});
 }
 
 class CartAuthInfoChanged extends CartEvent {
