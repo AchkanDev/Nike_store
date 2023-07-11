@@ -1,9 +1,7 @@
 import 'package:flutter/material.dart';
-import 'package:shared_preferences/shared_preferences.dart';
 
-import '../main.dart';
 
-final defualtStyleText = const TextStyle(fontFamily: "iranYekan");
+const defualtStyleText = TextStyle(fontFamily: "iranYekan");
 
 class MyAppThemeConfig {
   final primaryColor;
@@ -24,15 +22,15 @@ class MyAppThemeConfig {
   final shadow;
 
   MyAppThemeConfig.light()
-      : primaryColor = Color(0xff6200EE),
-        primaryVariant = Color(0xff3700B3),
-        backgroundColor = Color(0xffffffff),
-        surfaceColor = Color(0xffffffff),
-        errorColor = Color(0xffB00020),
+      : primaryColor = const Color(0xff6200EE),
+        primaryVariant = const Color(0xff3700B3),
+        backgroundColor = const Color(0xffffffff),
+        surfaceColor = const Color(0xffffffff),
+        errorColor = const Color(0xffB00020),
         onError = Colors.white,
-        secondaryColor = Color(0xff03DAC6),
-        primaryTextColor = Color(0xff262A35),
-        secondaryTextColor = Color(0xffB3B6BE),
+        secondaryColor = const Color(0xff03DAC6),
+        primaryTextColor = const Color(0xff262A35),
+        secondaryTextColor = const Color(0xffB3B6BE),
         onPrimary = Colors.white,
         onSecondary = Colors.black,
         onBackground = Colors.black,
@@ -42,15 +40,15 @@ class MyAppThemeConfig {
         shadow = Colors.black.withOpacity(0.1);
 
   MyAppThemeConfig.dark()
-      : primaryColor = Color(0xffBB86FC),
-        primaryVariant = Color(0xff3700B3),
-        backgroundColor = Color(0xff121212),
-        surfaceColor = Color(0xff121212),
-        errorColor = Color(0xffCF6679),
+      : primaryColor = const Color(0xffBB86FC),
+        primaryVariant = const Color(0xff3700B3),
+        backgroundColor = const Color(0xff121212),
+        surfaceColor = const Color(0xff121212),
+        errorColor = const Color(0xffCF6679),
         onError = Colors.black,
-        secondaryColor = Color(0xff03DAC5),
+        secondaryColor = const Color(0xff03DAC5),
         primaryTextColor = Colors.white,
-        secondaryTextColor = Color(0xffB3B6BE),
+        secondaryTextColor = const Color(0xffB3B6BE),
         onPrimary = Colors.black,
         onSecondary = Colors.black,
         onBackground = Colors.white,
@@ -67,29 +65,15 @@ class MyAppThemeConfig {
       dividerTheme: DividerThemeData(
         color: deviderColor,
       ),
-      colorScheme: ColorScheme(
-          shadow: shadow,
-          brightness: brightness,
-          primary: primaryColor,
-          onPrimary: onPrimary,
-          secondary: secondaryColor,
-          onSecondary: onSecondary,
-          error: errorColor,
-          onError: onError,
-          background: backgroundColor,
-          onBackground: onBackground,
-          surface: surfaceColor,
-          onSurface: onSurface),
       fontFamily: "iranYekan",
       textTheme: TextTheme(
-          subtitle2: defualtStyleText.apply(color: secondaryTextColor),
-          bodyText2: defualtStyleText.apply(color: primaryTextColor),
-          caption: defualtStyleText.apply(color: secondaryTextColor),
-          headline6: defualtStyleText
+          titleSmall: defualtStyleText.apply(color: secondaryTextColor),
+          bodyMedium: defualtStyleText.apply(color: primaryTextColor),
+          bodySmall: defualtStyleText.apply(color: secondaryTextColor),
+          titleLarge: defualtStyleText
               .copyWith(fontWeight: FontWeight.bold, fontSize: 18)
               .apply(color: primaryTextColor),
-          button: defualtStyleText),
-      backgroundColor: backgroundColor,
+          labelLarge: defualtStyleText),
       brightness: brightness,
       primaryColor: primaryColor,
 
@@ -110,7 +94,19 @@ class MyAppThemeConfig {
       appBarTheme: AppBarTheme(
         backgroundColor: primaryColor,
         foregroundColor: onPrimary,
-      ),
+      ), colorScheme: ColorScheme(
+          shadow: shadow,
+          brightness: brightness,
+          primary: primaryColor,
+          onPrimary: onPrimary,
+          secondary: secondaryColor,
+          onSecondary: onSecondary,
+          error: errorColor,
+          onError: onError,
+          background: backgroundColor,
+          onBackground: onBackground,
+          surface: surfaceColor,
+          onSurface: onSurface).copyWith(background: backgroundColor),
     );
   }
 }
