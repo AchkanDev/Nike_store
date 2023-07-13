@@ -1,7 +1,9 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
+import 'package:nike_store/data/repo/cart_repository.dart';
 import 'package:nike_store/screen/home/home.dart';
+import 'package:nike_store/widgets/badge.dart';
 import 'auth/auth.dart';
 import 'cart/cart.dart';
 
@@ -52,6 +54,12 @@ class _RootScreenState extends State<RootScreen> {
   }
 
   @override
+  void initState() {
+    cartRepository.count();
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return WillPopScope(
         onWillPop: _onWillPop,
@@ -59,11 +67,11 @@ class _RootScreenState extends State<RootScreen> {
           body: IndexedStack(
             index: selectedScreenIndex,
             children: [
-              _navigator(_homeKey, homeIndex, HomeScreen()),
+              _navigator(_homeKey, homeIndex, const HomeScreen()),
               _navigator(
                   _cartKey,
                   cartIndex,
-                  Center(
+                  const Center(
                     child: CartScreen(),
                   )),
               _navigator(
@@ -74,6 +82,7 @@ class _RootScreenState extends State<RootScreen> {
                         child: const Text("خروج از حساب کاربری"),
                         onPressed: () async {
                           await authRepository.signOut();
+                          CartRepository.changeCountCart.value = 0;
                           if (AuthRepository.authChangeNotifier.value == null ||
                               AuthRepository.authChangeNotifier.value!
                                   .accessToken.isEmpty) {
@@ -94,12 +103,25 @@ class _RootScreenState extends State<RootScreen> {
                   unselectedItemColor:
                       Theme.of(context).colorScheme.onBackground,
                   // fixedColor: Theme.of(context).colorScheme.onSecondary,
-                  items: const [
-                    BottomNavigationBarItem(
+                  items: [
+                    const BottomNavigationBarItem(
                         icon: Icon(CupertinoIcons.home), label: 'خانه'),
                     BottomNavigationBarItem(
-                        icon: Icon(CupertinoIcons.cart), label: 'سبد خرید'),
-                    BottomNavigationBarItem(
+                        icon: Stack(clipBehavior: Clip.none, children: [
+                          const Icon(CupertinoIcons.cart),
+                          Positioned(
+                            right: -12,
+                            top: -5,
+                            child: ValueListenableBuilder<int>(
+                              builder: (context, value, child) {
+                                return BadgeCart(value: value);
+                              },
+                              valueListenable: CartRepository.changeCountCart,
+                            ),
+                          ),
+                        ]),
+                        label: 'سبد خرید'),
+                    const BottomNavigationBarItem(
                         icon: Icon(CupertinoIcons.person), label: 'پروفایل'),
                     // BottomNavigationBarItem(
                     //     icon: Icon(CupertinoIcons.sun_max), label: 'تم' ,),

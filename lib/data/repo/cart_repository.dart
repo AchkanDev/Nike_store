@@ -1,3 +1,4 @@
+import 'package:flutter/material.dart';
 import 'package:nike_store/common/http_baseUrl.dart';
 
 import '../add_to_cart.dart';
@@ -15,6 +16,8 @@ abstract class ICartRepository {
 }
 
 class CartRepository implements ICartRepository {
+  static ValueNotifier<int> changeCountCart = ValueNotifier(0);
+
   final ICartDataSource dataSource;
 
   CartRepository(this.dataSource);
@@ -29,9 +32,10 @@ class CartRepository implements ICartRepository {
   }
 
   @override
-  Future<int> count() {
-    // TODO: implement count
-    throw UnimplementedError();
+  Future<int> count() async {
+    int count = await dataSource.count();
+    changeCountCart.value = count;
+    return count;
   }
 
   @override

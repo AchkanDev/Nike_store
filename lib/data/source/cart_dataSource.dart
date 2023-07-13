@@ -39,9 +39,10 @@ class CardRemoteDataSource with ResponseValidator implements ICartDataSource {
   }
 
   @override
-  Future<int> count() {
-    // TODO: implement count
-    throw UnimplementedError();
+  Future<int> count() async {
+    final response = await httpClient.get("cart/count");
+    validateResponse(response);
+    return response.data["count"];
   }
 
   @override
