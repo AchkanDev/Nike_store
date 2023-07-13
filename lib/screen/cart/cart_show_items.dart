@@ -9,14 +9,17 @@ import 'bloc/cart_bloc.dart';
 
 class CartShowItems extends StatelessWidget {
   final GestureTapCallback onDeleteButton;
+  final GestureTapCallback onIncreasChangeCountButton;
+  final GestureTapCallback onDecreaseChangeCountButton;
+  final CartItemEntity data;
 
-  CartShowItems({
+  const CartShowItems({
     super.key,
     required this.data,
     required this.onDeleteButton,
+    required this.onIncreasChangeCountButton,
+    required this.onDecreaseChangeCountButton,
   });
-
-  final CartItemEntity data;
 
   @override
   Widget build(BuildContext context) {
@@ -72,14 +75,20 @@ class CartShowItems extends StatelessWidget {
                   Row(
                     children: [
                       IconButton(
-                          onPressed: () {},
+                          onPressed: onIncreasChangeCountButton,
                           icon: const Icon(CupertinoIcons.plus_rectangle)),
-                      Text(
-                        data.count.toString(),
-                        style: Theme.of(context).textTheme.titleLarge,
-                      ),
+                      data.loadingOnChangeCount
+                          ? const Center(
+                              child: CupertinoActivityIndicator(),
+                            )
+                          : Text(
+                              data.count.toString(),
+                              style: Theme.of(context).textTheme.titleLarge,
+                            ),
                       IconButton(
-                          onPressed: () {},
+                          onPressed: data.count > 1
+                              ? onDecreaseChangeCountButton
+                              : null,
                           icon: const Icon(CupertinoIcons.minus_rectangle)),
                     ],
                   )
@@ -90,14 +99,17 @@ class CartShowItems extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      data.productEntity.previousPrice.withPriceLabel,
+                      (data.productEntity.previousPrice +
+                              data.productEntity.discount)
+                          .withPriceLabel,
                       style: const TextStyle(
                         decoration: TextDecoration.lineThrough,
-                      ).copyWith(fontSize: 12),
+                      ).copyWith(
+                          fontSize: 12,
+                          color: Theme.of(context).textTheme.bodySmall?.color),
                     ),
                     Text(
-                      (data.productEntity.price - data.productEntity.discount)
-                          .withPriceLabel,
+                      (data.productEntity.price).withPriceLabel,
                     ),
                   ],
                 ),

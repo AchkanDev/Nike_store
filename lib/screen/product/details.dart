@@ -101,14 +101,18 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           Column(
                             children: [
                               Text(
-                                widget.product.previousPrice.withPriceLabel,
+                                (widget.product.previousPrice +
+                                        widget.product.discount)
+                                    .withPriceLabel,
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption!
                                     .copyWith(
                                         decoration: TextDecoration.lineThrough),
                               ),
-                              Text(widget.product.price.withPriceLabel),
+                              Text((widget.product.price +
+                                      widget.product.discount)
+                                  .withPriceLabel),
                             ],
                           )
                         ],

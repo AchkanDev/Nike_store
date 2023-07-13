@@ -9,7 +9,7 @@ final cartRepository = CartRepository(CardRemoteDataSource(httpClient));
 abstract class ICartRepository {
   Future<AddToCartResponseEntity> add(int productId);
   Future<CartResponse> getAll();
-  Future<AddToCartResponseEntity> changeCount();
+  Future<AddToCartResponseEntity> changeCount(int cartItemId, int newCount);
   Future<int> count();
   Future<void> delete(int cartId);
 }
@@ -24,9 +24,8 @@ class CartRepository implements ICartRepository {
   }
 
   @override
-  Future<AddToCartResponseEntity> changeCount() {
-    // TODO: implement changeCount
-    throw UnimplementedError();
+  Future<AddToCartResponseEntity> changeCount(int cartItemId, int newCount) {
+    return dataSource.changeCount(cartItemId, newCount);
   }
 
   @override

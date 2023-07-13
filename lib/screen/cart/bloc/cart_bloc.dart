@@ -50,8 +50,40 @@ class CartBloc extends Bloc<CartEvent, CartState> {
             if (successState.cartResponse.cartItems.isEmpty) {
               emit(CartEmptyState());
             } else {
-              emit(CartSuccess(successState.cartResponse));
+              emit(calculatePrice(successState.cartResponse));
             }
+          } catch (e) {
+            debugPrint(e.toString());
+          }
+        }
+      } else if (event is CartIncreaseProductCount ||
+          event is CartDecreaseProductCount) {
+        int cartItemId = 0;
+        if (event is CartIncreaseProductCount) {
+          cartItemId = event.cartItemId;
+        } else if (event is CartDecreaseProductCount) {
+          cartItemId = event.cartItemId;
+        }
+
+        if (state is CartSuccess) {
+          try {
+            final successState = (state as CartSuccess);
+            final cartItem = successState.cartResponse.cartItems
+                .indexWhere((element) => element.cart_item_id == cartItemId);
+            successState.cartResponse.cartItems[cartItem].loadingOnChangeCount =
+                true;
+
+            emit(CartSuccess(successState.cartResponse));
+
+            int newCount = event is CartIncreaseProductCount
+                ? ++successState.cartResponse.cartItems[cartItem].count
+                : --successState.cartResponse.cartItems[cartItem].count;
+            await cartRepository.changeCount(cartItemId, newCount);
+
+            successState.cartResponse.cartItems[cartItem]
+              ..count = newCount
+              ..loadingOnChangeCount = false;
+            emit(calculatePrice(successState.cartResponse));
           } catch (e) {
             debugPrint(e.toString());
           }
@@ -73,5 +105,24 @@ class CartBloc extends Bloc<CartEvent, CartState> {
     } catch (e) {
       emit(CartError(AppException(messageError: e.toString())));
     }
+  }
+
+  CartSuccess calculatePrice(CartResponse cartResponse) {
+    int pricTotal = 0;
+    int pricePayble = 0;
+    int shippingCost = 0;
+
+    cartResponse.cartItems.forEach((element) {
+      pricTotal += (element.productEntity.previousPrice +
+              element.productEntity.discount) *
+          element.count;
+      pricePayble += element.productEntity.price * element.count;
+    });
+    shippingCost = pricePayble >= 250000 ? 0 : 30000;
+
+    cartResponse.payablePrice = pricePayble;
+    cartResponse.totalPrice = pricTotal;
+    cartResponse.shippingCosts = shippingCost;
+    return CartSuccess(cartResponse);
   }
 }

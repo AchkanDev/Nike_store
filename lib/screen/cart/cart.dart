@@ -7,6 +7,7 @@ import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/cart_repository.dart';
 import 'package:nike_store/screen/auth/auth.dart';
 import 'package:nike_store/screen/cart/bloc/cart_bloc.dart';
+import 'package:nike_store/screen/cart/cart_price_info.dart';
 import 'package:nike_store/screen/home/home.dart';
 import 'package:nike_store/widgets/empty_state.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
@@ -22,6 +23,7 @@ class CartScreen extends StatefulWidget {
 
 class _CartScreenState extends State<CartScreen> {
   late CartBloc? cartBloc;
+  int pricePayable = 0;
   final RefreshController _refresher = RefreshController();
   StreamSubscription? subScriptionRefreshedState;
 
@@ -58,8 +60,9 @@ class _CartScreenState extends State<CartScreen> {
             subScriptionRefreshedState = bloc.stream.listen((state) {
               if (_refresher.isRefresh) {
                 if (state is CartSuccess) {
+                  pricePayable = 0;
                   _refresher.refreshCompleted();
-                } else if (state is CartError) {
+                } else {
                   _refresher.refreshFailed();
                 }
               }
@@ -89,16 +92,30 @@ class _CartScreenState extends State<CartScreen> {
                   controller: _refresher,
                   child: ListView.builder(
                     physics: defaultPhysics,
-                    itemCount: state.cartResponse.cartItems.length,
+                    itemCount: state.cartResponse.cartItems.length + 1,
                     itemBuilder: (context, index) {
-                      final data = state.cartResponse.cartItems[index];
-                      return CartShowItems(
-                        data: data,
-                        onDeleteButton: () {
-                          cartBloc!.add(
-                              CartOnClickedDeleteButton(data.cart_item_id));
-                        },
-                      );
+                      if (index < state.cartResponse.cartItems.length) {
+                        final data = state.cartResponse.cartItems[index];
+                        pricePayable += (data.productEntity.previousPrice -
+                            data.productEntity.discount);
+                        return CartShowItems(
+                          onIncreasChangeCountButton: () => cartBloc?.add(
+                              CartIncreaseProductCount(data.cart_item_id)),
+                          onDecreaseChangeCountButton: () => cartBloc?.add(
+                              CartDecreaseProductCount(data.cart_item_id)),
+                          data: data,
+                          onDeleteButton: () {
+                            cartBloc!.add(
+                                CartOnClickedDeleteButton(data.cart_item_id));
+                          },
+                        );
+                      } else {
+                        return CartPriceInfo(
+                          pricePayable: state.cartResponse.payablePrice,
+                          priceTotal: state.cartResponse.totalPrice,
+                          shippingCost: state.cartResponse.shippingCosts,
+                        );
+                      }
                     },
                   ),
                 );
@@ -122,20 +139,35 @@ class _CartScreenState extends State<CartScreen> {
                 // ScaffoldMessenger.of(context).showSnackBar(
                 //     SnackBar(content: Text(state.appException.messageError)));
               } else if (state is CartEmptyState) {
-                return EmptuState(
-                    message: "هیچ محصولی یافت نشد",
-                    image: SvgPicture.asset(
-                      "assets/img/empty_cart.svg",
-                      width: 220,
-                    ),
-                    callToBack: ElevatedButton(
-                      child: const Text("ورود به فروشگاه"),
-                      onPressed: () => Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => const HomeScreen(),
-                        ),
+                return SmartRefresher(
+                  onRefresh: () {
+                    cartBloc?.add(CartStarted(
+                        AuthRepository.authChangeNotifier.value,
+                        isRefreshed: true));
+                  },
+                  controller: _refresher,
+                  header: const ClassicHeader(
+                    completeText: "با موفقیت انجام شد",
+                    idleText: "برای بروزرسانی به پایین بکشید",
+                    failedText: "با مشکل مواجه شد",
+                    refreshingText: "در حال بروزرسانی",
+                    releaseText: "رها کنید",
+                  ),
+                  child: EmptuState(
+                      message: "هیچ محصولی یافت نشد",
+                      image: SvgPicture.asset(
+                        "assets/img/empty_cart.svg",
+                        width: 220,
                       ),
-                    ));
+                      callToBack: ElevatedButton(
+                        child: const Text("ورود به فروشگاه"),
+                        onPressed: () => Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => const HomeScreen(),
+                          ),
+                        ),
+                      )),
+                );
               } else {
                 throw Exception("State not valid");
               }

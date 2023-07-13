@@ -2,16 +2,17 @@ import 'package:dio/dio.dart';
 
 import '../add_to_cart.dart';
 import '../cart_response.dart';
+import 'package:nike_store/common/response_validator.dart';
 
 abstract class ICartDataSource {
   Future<AddToCartResponseEntity> add(int productId);
   Future<CartResponse> getAll();
-  Future<AddToCartResponseEntity> changeCount();
+  Future<AddToCartResponseEntity> changeCount(int cartItemId, int newCount);
   Future<int> count();
   Future<void> delete(int cartId);
 }
 
-class CardRemoteDataSource implements ICartDataSource {
+class CardRemoteDataSource with ResponseValidator implements ICartDataSource {
   final Dio httpClient;
 
   CardRemoteDataSource(this.httpClient);
@@ -20,13 +21,21 @@ class CardRemoteDataSource implements ICartDataSource {
   Future<AddToCartResponseEntity> add(int productId) async {
     final response =
         await httpClient.post("cart/add", data: {"product_id": productId});
+    validateResponse(response);
+
     return AddToCartResponseEntity.fromJson(response.data);
   }
 
   @override
-  Future<AddToCartResponseEntity> changeCount() {
-    // TODO: implement changeCount
-    throw UnimplementedError();
+  Future<AddToCartResponseEntity> changeCount(
+      int cartItemId, int newCount) async {
+    final response = await httpClient.post("cart/changeCount", data: {
+      "cart_item_id": cartItemId,
+      "count": newCount,
+    });
+    validateResponse(response);
+
+    return AddToCartResponseEntity.fromJson(response.data);
   }
 
   @override
@@ -45,6 +54,7 @@ class CardRemoteDataSource implements ICartDataSource {
   @override
   Future<CartResponse> getAll() async {
     final response = await httpClient.get("cart/list");
+    validateResponse(response);
 
     return CartResponse.fromJson(response.data);
   }
