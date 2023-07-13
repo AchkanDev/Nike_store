@@ -9,6 +9,7 @@ import 'package:nike_store/screen/auth/auth.dart';
 import 'package:nike_store/screen/cart/bloc/cart_bloc.dart';
 import 'package:nike_store/screen/cart/cart_price_info.dart';
 import 'package:nike_store/screen/home/home.dart';
+import 'package:nike_store/screen/shipping/shipping_cart.dart';
 import 'package:nike_store/widgets/empty_state.dart';
 import 'package:pull_to_refresh/pull_to_refresh.dart';
 
@@ -22,6 +23,7 @@ class CartScreen extends StatefulWidget {
 }
 
 class _CartScreenState extends State<CartScreen> {
+  bool stateFloatActionButton = false;
   late CartBloc? cartBloc;
   int pricePayable = 0;
   final RefreshController _refresher = RefreshController();
@@ -52,12 +54,39 @@ class _CartScreenState extends State<CartScreen> {
           centerTitle: true,
           title: const Text("سبد خرید"),
         ),
+        floatingActionButton: Container(
+            width: MediaQuery.of(context).size.width,
+            margin: const EdgeInsets.fromLTRB(25, 0, 25, 0),
+            child: Visibility(
+              visible: stateFloatActionButton,
+              child: FloatingActionButton.extended(
+                  onPressed: () {
+                    final state = cartBloc?.state;
+                    if (state is CartSuccess) {
+                      Navigator.of(context).push(MaterialPageRoute(
+                          builder: (context) => ShippingCart(
+                                pricePayable: state.cartResponse.payablePrice,
+                                priceTotal: state.cartResponse.totalPrice,
+                                shippingCost: state.cartResponse.shippingCosts,
+                              )));
+                    }
+                  },
+                  label: Text(
+                    "پرداخت",
+                    style: Theme.of(context).textTheme.bodyMedium,
+                  )),
+            )),
+        floatingActionButtonLocation: FloatingActionButtonLocation.centerFloat,
         body: BlocProvider<CartBloc>(
           create: (context) {
             final bloc = CartBloc(cartRepository);
             cartBloc = bloc;
             bloc.add(CartStarted(AuthRepository.authChangeNotifier.value));
+
             subScriptionRefreshedState = bloc.stream.listen((state) {
+              setState(() {
+                stateFloatActionButton = state is CartSuccess;
+              });
               if (_refresher.isRefresh) {
                 if (state is CartSuccess) {
                   pricePayable = 0;
@@ -90,33 +119,36 @@ class _CartScreenState extends State<CartScreen> {
                     releaseText: "رها کنید",
                   ),
                   controller: _refresher,
-                  child: ListView.builder(
-                    physics: defaultPhysics,
-                    itemCount: state.cartResponse.cartItems.length + 1,
-                    itemBuilder: (context, index) {
-                      if (index < state.cartResponse.cartItems.length) {
-                        final data = state.cartResponse.cartItems[index];
-                        pricePayable += (data.productEntity.previousPrice -
-                            data.productEntity.discount);
-                        return CartShowItems(
-                          onIncreasChangeCountButton: () => cartBloc?.add(
-                              CartIncreaseProductCount(data.cart_item_id)),
-                          onDecreaseChangeCountButton: () => cartBloc?.add(
-                              CartDecreaseProductCount(data.cart_item_id)),
-                          data: data,
-                          onDeleteButton: () {
-                            cartBloc!.add(
-                                CartOnClickedDeleteButton(data.cart_item_id));
-                          },
-                        );
-                      } else {
-                        return CartPriceInfo(
-                          pricePayable: state.cartResponse.payablePrice,
-                          priceTotal: state.cartResponse.totalPrice,
-                          shippingCost: state.cartResponse.shippingCosts,
-                        );
-                      }
-                    },
+                  child: Padding(
+                    padding: const EdgeInsets.fromLTRB(0, 0, 0, 80),
+                    child: ListView.builder(
+                      physics: defaultPhysics,
+                      itemCount: state.cartResponse.cartItems.length + 1,
+                      itemBuilder: (context, index) {
+                        if (index < state.cartResponse.cartItems.length) {
+                          final data = state.cartResponse.cartItems[index];
+                          pricePayable += (data.productEntity.previousPrice -
+                              data.productEntity.discount);
+                          return CartShowItems(
+                            onIncreasChangeCountButton: () => cartBloc?.add(
+                                CartIncreaseProductCount(data.cart_item_id)),
+                            onDecreaseChangeCountButton: () => cartBloc?.add(
+                                CartDecreaseProductCount(data.cart_item_id)),
+                            data: data,
+                            onDeleteButton: () {
+                              cartBloc!.add(
+                                  CartOnClickedDeleteButton(data.cart_item_id));
+                            },
+                          );
+                        } else {
+                          return CartPriceInfo(
+                            pricePayable: state.cartResponse.payablePrice,
+                            priceTotal: state.cartResponse.totalPrice,
+                            shippingCost: state.cartResponse.shippingCosts,
+                          );
+                        }
+                      },
+                    ),
                   ),
                 );
               } else if (state is CartError) {
