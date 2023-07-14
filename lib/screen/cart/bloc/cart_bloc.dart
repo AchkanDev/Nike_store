@@ -95,6 +95,7 @@ class CartBloc extends Bloc<CartEvent, CartState> {
   Future<void> cartState(Emitter<CartState> emit, bool isRefreshed) async {
     try {
       if (!isRefreshed) {
+        Future.delayed(Duration(milliseconds: 5000));
         emit(CartLoading());
       }
       final CartResponse cartResponse = await cartRepository.getAll();

@@ -47,7 +47,7 @@ class CartPriceInfo extends StatelessWidget {
                 ),
               ),
               const Divider(
-                height: 2,
+                height: 4,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
@@ -60,7 +60,7 @@ class CartPriceInfo extends StatelessWidget {
                 ),
               ),
               const Divider(
-                height: 2,
+                height: 4,
               ),
               Padding(
                 padding: const EdgeInsets.all(8.0),
