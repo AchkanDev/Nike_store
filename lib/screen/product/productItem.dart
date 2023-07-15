@@ -70,7 +70,7 @@ class ProductItem extends StatelessWidget {
                 Padding(
                   padding: const EdgeInsets.only(left: 8, right: 8),
                   child: Text(
-                    (product.previousPrice + product.discount).withPriceLabel,
+                    (product.previousPrice).withPriceLabel,
                     style: Theme.of(context)
                         .textTheme
                         .caption!
@@ -79,8 +79,7 @@ class ProductItem extends StatelessWidget {
                 ),
                 Padding(
                   padding: const EdgeInsets.only(top: 4, left: 8, right: 8),
-                  child:
-                      Text((product.price + product.discount).withPriceLabel),
+                  child: Text((product.price).withPriceLabel),
                 ),
               ],
             ),

@@ -4,8 +4,11 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_store/common/utility.dart';
+import 'package:nike_store/data/auth_info.dart';
 import 'package:nike_store/data/product.dart';
+import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/cart_repository.dart';
+import 'package:nike_store/screen/cart/bloc/cart_bloc.dart';
 import 'package:nike_store/screen/product/bloc/product_bloc.dart';
 import 'package:nike_store/screen/product/comment/comment_list.dart';
 import 'package:nike_store/widgets/loadingImage.dart';
@@ -101,18 +104,14 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           Column(
                             children: [
                               Text(
-                                (widget.product.previousPrice +
-                                        widget.product.discount)
-                                    .withPriceLabel,
+                                (widget.product.previousPrice).withPriceLabel,
                                 style: Theme.of(context)
                                     .textTheme
                                     .caption!
                                     .copyWith(
                                         decoration: TextDecoration.lineThrough),
                               ),
-                              Text((widget.product.price +
-                                      widget.product.discount)
-                                  .withPriceLabel),
+                              Text((widget.product.price).withPriceLabel),
                             ],
                           )
                         ],
