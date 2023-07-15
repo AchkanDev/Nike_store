@@ -99,9 +99,7 @@ class CartShowItems extends StatelessWidget {
                 child: Column(
                   children: [
                     Text(
-                      (data.productEntity.previousPrice +
-                              data.productEntity.discount)
-                          .withPriceLabel,
+                      (data.productEntity.previousPrice).withPriceLabel,
                       style: const TextStyle(
                         decoration: TextDecoration.lineThrough,
                       ).copyWith(

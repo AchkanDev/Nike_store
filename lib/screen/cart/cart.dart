@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:get/get.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/cart_repository.dart';
 import 'package:nike_store/screen/auth/auth.dart';
@@ -25,18 +26,22 @@ class CartScreen extends StatefulWidget {
 class _CartScreenState extends State<CartScreen> {
   bool stateFloatActionButton = false;
   late CartBloc? cartBloc;
-  int pricePayable = 0;
   final RefreshController _refresher = RefreshController();
   StreamSubscription? subScriptionRefreshedState;
 
   @override
   void initState() {
     AuthRepository.authChangeNotifier.addListener(authListener);
+    CartRepository.changeCountCart.addListener(countListener);
     super.initState();
   }
 
   void authListener() {
     cartBloc?.add(CartAuthInfoChanged(AuthRepository.authChangeNotifier.value));
+  }
+
+  void countListener() {
+    cartBloc?.add(CartStarted(AuthRepository.authChangeNotifier.value));
   }
 
   @override
@@ -89,7 +94,6 @@ class _CartScreenState extends State<CartScreen> {
               });
               if (_refresher.isRefresh) {
                 if (state is CartSuccess) {
-                  pricePayable = 0;
                   _refresher.refreshCompleted();
                 } else {
                   _refresher.refreshFailed();
@@ -127,8 +131,6 @@ class _CartScreenState extends State<CartScreen> {
                       itemBuilder: (context, index) {
                         if (index < state.cartResponse.cartItems.length) {
                           final data = state.cartResponse.cartItems[index];
-                          pricePayable += (data.productEntity.previousPrice -
-                              data.productEntity.discount);
                           return CartShowItems(
                             onIncreasChangeCountButton: () => cartBloc?.add(
                                 CartIncreaseProductCount(data.cart_item_id)),
