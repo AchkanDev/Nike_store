@@ -1,4 +1,5 @@
 import 'package:flutter/material.dart';
+import 'package:nike_store/data/favorite_manager.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/screen/root.dart';
 import 'package:nike_store/widgets/theme.dart';
@@ -6,6 +7,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 ValueNotifier<ThemeMode> theme = ValueNotifier(ThemeMode.light);
 void main() async {
+  FavoriteManager.init();
   WidgetsFlutterBinding.ensureInitialized();
   authRepository.loadTokens();
   runApp(const MyApp());

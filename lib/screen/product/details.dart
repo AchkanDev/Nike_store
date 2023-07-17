@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_store/common/utility.dart';
 import 'package:nike_store/data/auth_info.dart';
+import 'package:nike_store/data/favorite_manager.dart';
 import 'package:nike_store/data/product.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/cart_repository.dart';
@@ -83,9 +84,29 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                       loadingImageServer(imageUrl: widget.product.image),
                   foregroundColor: Theme.of(context).colorScheme.onSecondary,
                   actions: [
-                    const Padding(
-                      padding: EdgeInsets.all(8.0),
-                      child: Icon(CupertinoIcons.heart),
+                    Padding(
+                      padding: const EdgeInsets.all(8.0),
+                      child: InkWell(
+                        onTap: () {
+                          if (favoriteManager.isFavorite(widget.product)) {
+                            favoriteManager.delete(widget.product);
+                          } else {
+                            favoriteManager.addFavorite(widget.product);
+                          }
+                          setState(() {});
+                        },
+                        child: ValueListenableBuilder<int>(
+                          valueListenable: FavoriteManager.changeFavorite,
+                          builder: (context, value, child) {
+                            return Icon(
+                              favoriteManager.isFavorite(widget.product)
+                                  ? CupertinoIcons.heart_fill
+                                  : CupertinoIcons.heart,
+                              color: Theme.of(context).colorScheme.onSecondary,
+                            );
+                          },
+                        ),
+                      ),
                     ),
                   ],
                 ),

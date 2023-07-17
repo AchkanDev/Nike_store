@@ -93,7 +93,7 @@ class _RootScreenState extends State<RootScreen> {
                 //         }
                 //       }),
                 // )
-                ProfileScreen(),
+                const ProfileScreen(),
               ),
             ],
           ),
