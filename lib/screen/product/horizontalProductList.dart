@@ -2,6 +2,7 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:nike_store/common/utility.dart';
 import 'package:nike_store/data/product.dart';
+import 'package:nike_store/screen/list/product_list.dart';
 import 'package:nike_store/screen/product/productItem.dart';
 
 import '../../widgets/loadingImage.dart';
@@ -28,11 +29,18 @@ class HorizontalProductList extends StatelessWidget {
             children: [
               Text(
                 title,
-                style: Theme.of(context).textTheme.subtitle2?.copyWith(
+                style: Theme.of(context).textTheme.titleSmall?.copyWith(
                       color: Theme.of(context).colorScheme.onBackground,
                     ),
               ),
-              TextButton(onPressed: () {}, child: Text("مشاهده همه ")),
+              TextButton(
+                  onPressed: () {
+                    Navigator.of(context).push(MaterialPageRoute(
+                      builder: (context) => ProductListScreen(
+                          sort: ProductSort.names.indexOf(title)),
+                    ));
+                  },
+                  child: const Text("مشاهده همه ")),
             ],
           ),
         ),
