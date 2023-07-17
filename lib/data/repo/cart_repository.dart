@@ -17,6 +17,7 @@ abstract class ICartRepository {
 
 class CartRepository implements ICartRepository {
   static ValueNotifier<int> changeCountCart = ValueNotifier(0);
+  static ValueNotifier<int> changeProductFromDetailScreen = ValueNotifier(0);
 
   final ICartDataSource dataSource;
 

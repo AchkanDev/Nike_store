@@ -32,7 +32,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void initState() {
     AuthRepository.authChangeNotifier.addListener(authListener);
-    CartRepository.changeCountCart.addListener(countListener);
+    CartRepository.changeProductFromDetailScreen.addListener(countListener);
     super.initState();
   }
 
