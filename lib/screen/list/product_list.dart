@@ -6,6 +6,8 @@ import 'package:nike_store/data/repo/product_repository.dart';
 import 'package:nike_store/screen/list/bloc/product_list_bloc.dart';
 import 'package:nike_store/screen/product/productItem.dart';
 
+enum ProductView { gird, list }
+
 class ProductListScreen extends StatefulWidget {
   final int sort;
 
@@ -17,7 +19,7 @@ class ProductListScreen extends StatefulWidget {
 
 class _ProductListScreenState extends State<ProductListScreen> {
   ProductListBloc? bloc;
-
+  ProductView productView = ProductView.gird;
   @override
   void dispose() {
     bloc?.close();
@@ -174,9 +176,17 @@ class _ProductListScreenState extends State<ProductListScreen> {
                                 width: 1,
                               ),
                               IconButton(
-                                  onPressed: () {},
-                                  icon: const Icon(
-                                      CupertinoIcons.square_grid_2x2))
+                                  onPressed: () {
+                                    setState(() {
+                                      productView == ProductView.gird
+                                          ? productView = ProductView.list
+                                          : productView = ProductView.gird;
+                                    });
+                                  },
+                                  icon: productView != ProductView.gird
+                                      ? const Icon(
+                                          CupertinoIcons.square_grid_2x2)
+                                      : const Icon(CupertinoIcons.square_list))
                             ],
                           ),
                         ),
@@ -184,13 +194,18 @@ class _ProductListScreenState extends State<ProductListScreen> {
                       Expanded(
                         child: GridView.builder(
                           gridDelegate:
-                              const SliverGridDelegateWithFixedCrossAxisCount(
-                                  childAspectRatio: 0.65, crossAxisCount: 2),
+                              SliverGridDelegateWithFixedCrossAxisCount(
+                                  childAspectRatio: 0.65,
+                                  crossAxisCount:
+                                      productView == ProductView.gird ? 2 : 1),
                           itemCount: state.products.length,
                           itemBuilder: (context, index) {
-                            return ProductItem(
-                              product: state.products[index],
-                              borderRadius: BorderRadius.zero,
+                            return Padding(
+                              padding: const EdgeInsets.fromLTRB(8, 8, 8, 0),
+                              child: ProductItem(
+                                product: state.products[index],
+                                borderRadius: BorderRadius.zero,
+                              ),
                             );
                           },
                         ),
