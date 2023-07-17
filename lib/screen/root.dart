@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:nike_store/data/repo/auth_repository.dart';
 import 'package:nike_store/data/repo/cart_repository.dart';
 import 'package:nike_store/screen/home/home.dart';
+import 'package:nike_store/screen/profile/profile_screen.dart';
 import 'package:nike_store/widgets/badge.dart';
 import 'auth/auth.dart';
 import 'cart/cart.dart';
@@ -75,23 +76,25 @@ class _RootScreenState extends State<RootScreen> {
                     child: CartScreen(),
                   )),
               _navigator(
-                  _profileKey,
-                  profileIndex,
-                  Center(
-                    child: ElevatedButton(
-                        child: const Text("خروج از حساب کاربری"),
-                        onPressed: () async {
-                          await authRepository.signOut();
-                          CartRepository.changeCountCart.value = 0;
-                          if (AuthRepository.authChangeNotifier.value == null ||
-                              AuthRepository.authChangeNotifier.value!
-                                  .accessToken.isEmpty) {
-                            ScaffoldMessenger.of(context).showSnackBar(
-                                const SnackBar(
-                                    content: Text("خروج با موفیقت انجام شد")));
-                          }
-                        }),
-                  )),
+                _profileKey,
+                profileIndex,
+                // Center(
+                //   child: ElevatedButton(
+                //       child: const Text("خروج از حساب کاربری"),
+                //       onPressed: () async {
+                //         await authRepository.signOut();
+                //         CartRepository.changeCountCart.value = 0;
+                //         if (AuthRepository.authChangeNotifier.value == null ||
+                //             AuthRepository.authChangeNotifier.value!
+                //                 .accessToken.isEmpty) {
+                //           ScaffoldMessenger.of(context).showSnackBar(
+                //               const SnackBar(
+                //                   content: Text("خروج با موفیقت انجام شد")));
+                //         }
+                //       }),
+                // )
+                ProfileScreen(),
+              ),
             ],
           ),
           bottomNavigationBar: Row(
