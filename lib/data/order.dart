@@ -21,4 +21,4 @@ class OrderParams {
       this.address, this.paymentMethode);
 }
 
-enum PaymentMethode { online, cashDelivery }
+enum PaymentMethode { online, cashOnDelivery }

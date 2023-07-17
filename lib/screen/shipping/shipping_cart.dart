@@ -5,6 +5,7 @@ import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:nike_store/data/order.dart';
 import 'package:nike_store/screen/cart/cart_price_info.dart';
+import 'package:nike_store/screen/payment_webView.dart';
 import 'package:nike_store/screen/receipt/reciept.dart';
 import 'package:nike_store/screen/shipping/bloc/shipping_bloc.dart';
 
@@ -58,10 +59,17 @@ class _ShippingCartState extends State<ShippingCart> {
               ScaffoldMessengerState().showSnackBar(
                   SnackBar(content: Text(state.appException.messageError)));
             } else if (state is ShippingSuccess) {
-              Navigator.of(context).push(MaterialPageRoute(
-                builder: (context) =>
-                    ReceiptScreen(orderId: state.orderResult.orderId),
-              ));
+              if (state.orderResult.bankGatewayUrl.isNotEmpty) {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) => PaymentWebViewPage(
+                      bankGetUrl: state.orderResult.bankGatewayUrl),
+                ));
+              } else {
+                Navigator.of(context).push(MaterialPageRoute(
+                  builder: (context) =>
+                      ReceiptScreen(orderId: state.orderResult.orderId),
+                ));
+              }
             }
           });
           return bloc;
@@ -183,7 +191,7 @@ class _ShippingCartState extends State<ShippingCart> {
                                           portalCode.text,
                                           phoneNumber.text,
                                           address.text,
-                                          PaymentMethode.cashDelivery)));
+                                          PaymentMethode.cashOnDelivery)));
                                 },
                                 child: const Text("پرداخت در محل")),
                           ],
