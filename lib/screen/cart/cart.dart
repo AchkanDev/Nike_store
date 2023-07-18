@@ -47,6 +47,7 @@ class _CartScreenState extends State<CartScreen> {
   @override
   void dispose() {
     AuthRepository.authChangeNotifier.removeListener(authListener);
+    CartRepository.changeProductFromDetailScreen.removeListener(countListener);
     cartBloc?.close();
     subScriptionRefreshedState?.cancel();
     super.dispose();

@@ -5,7 +5,7 @@ import 'package:nike_store/screen/root.dart';
 import 'package:nike_store/widgets/theme.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
-ValueNotifier<ThemeMode> theme = ValueNotifier(ThemeMode.light);
+final ValueNotifier<ThemeMode> theme = ValueNotifier(ThemeMode.light);
 void main() async {
   FavoriteManager.init();
   WidgetsFlutterBinding.ensureInitialized();

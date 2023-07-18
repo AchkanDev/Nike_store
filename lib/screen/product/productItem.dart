@@ -1,5 +1,6 @@
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nike_store/common/utility.dart';
 import 'package:nike_store/data/favorite_manager.dart';
 import 'package:nike_store/screen/product/details.dart';
@@ -62,8 +63,8 @@ class _ProductItemState extends State<ProductItem> {
                           height: 28,
                           decoration: const BoxDecoration(
                               shape: BoxShape.circle, color: Colors.white),
-                          child: ValueListenableBuilder<int>(
-                            valueListenable: FavoriteManager.changeFavorite,
+                          child: ValueListenableBuilder<Box<ProductEntity>>(
+                            valueListenable: FavoriteManager.listnable,
                             builder: (context, value, child) {
                               return Icon(
                                 favoriteManager.isFavorite(widget.product)

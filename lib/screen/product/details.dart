@@ -3,6 +3,7 @@ import 'dart:async';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_bloc/flutter_bloc.dart';
+import 'package:hive_flutter/hive_flutter.dart';
 import 'package:nike_store/common/utility.dart';
 import 'package:nike_store/data/auth_info.dart';
 import 'package:nike_store/data/favorite_manager.dart';
@@ -87,7 +88,7 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                     Padding(
                       padding: const EdgeInsets.all(8.0),
                       child: InkWell(
-                        onTap: () {
+                        onTap: () async {
                           if (favoriteManager.isFavorite(widget.product)) {
                             favoriteManager.delete(widget.product);
                           } else {
@@ -95,8 +96,8 @@ class _ProductDetailsScreenState extends State<ProductDetailsScreen> {
                           }
                           setState(() {});
                         },
-                        child: ValueListenableBuilder<int>(
-                          valueListenable: FavoriteManager.changeFavorite,
+                        child: ValueListenableBuilder<Box<ProductEntity>>(
+                          valueListenable: FavoriteManager.listnable,
                           builder: (context, value, child) {
                             return Icon(
                               favoriteManager.isFavorite(widget.product)

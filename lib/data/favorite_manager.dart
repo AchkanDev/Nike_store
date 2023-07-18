@@ -6,6 +6,8 @@ final favoriteManager = FavoriteManager();
 
 class FavoriteManager {
   static final ValueNotifier<int> changeFavorite = ValueNotifier(0);
+  static ValueListenable<Box<ProductEntity>> get listnable =>
+      Hive.box<ProductEntity>(_openBox).listenable();
   static const _openBox = "favorites";
   final _box = Hive.box<ProductEntity>(_openBox);
 
@@ -27,5 +29,9 @@ class FavoriteManager {
 
   bool isFavorite(ProductEntity productEntity) {
     return _box.containsKey(productEntity.id);
+  }
+
+  List<ProductEntity> getAll() {
+    return _box.values.toList();
   }
 }
