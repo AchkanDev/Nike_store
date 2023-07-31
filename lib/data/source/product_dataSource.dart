@@ -2,6 +2,7 @@ import 'dart:io';
 
 import 'package:dio/dio.dart';
 import 'package:nike_store/common/appExeption.dart';
+import 'package:nike_store/common/response_validator.dart';
 
 import '../product.dart';
 
@@ -10,7 +11,9 @@ abstract class IProductDataSource {
   Future<List<ProductEntity>> search(String searchTerm);
 }
 
-class ProductRemoteDataSource implements IProductDataSource {
+class ProductRemoteDataSource
+    with ResponseValidator
+    implements IProductDataSource {
   final Dio httpClient;
 
   ProductRemoteDataSource(this.httpClient);
@@ -34,11 +37,5 @@ class ProductRemoteDataSource implements IProductDataSource {
       productList.add(ProductEntity.fromJson(element));
     });
     return productList;
-  }
-
-  void validateResponse(Response response) {
-    if (response.statusCode != 200) {
-      throw AppExeption("خطای نامشخص");
-    }
   }
 }
